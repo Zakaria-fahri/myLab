@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: technical-app
+  template:
+    metadata:
+      labels:
+        app: technical-app
+    spec:
+      serviceAccountName: technicalservice
+      containers:
+        - name: testing
+          image: zakariafahri/mytechnicaltask:1
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: technical-secret
+                  key: PORT
+            - name: GREETING
+              valueFrom:
+                secretKeyRef:
+                  name: technical-secret
+                  key: GREETING
