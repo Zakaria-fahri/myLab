@@ -23,6 +23,11 @@ spec:
           ports:
             - containerPort: 4000
           env:
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: technical-secret
+                  key: API
             - name: PORT
               valueFrom:
                 secretKeyRef:
