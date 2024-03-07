@@ -3,10 +3,14 @@ kind: Deployment
 metadata:
   name: task-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: technical-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
