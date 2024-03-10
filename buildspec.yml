@@ -43,7 +43,17 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file..
-      - echo Push the latest image to cluster
+      
+      - echo Scanning the Docker image for vulnerabilities...
+      - aws ecr start-image-scan --repository-name testing-project1-for-technical --image-id imageTag=latest
+      - scan_result=$(aws ecr describe-image-scan-findings --repository-name "$REPOSITORY_NAME" --image-id imageTag=latest --output json)
+      - echo "$scan_result"
+      - high_severity=$(echo "$scan_result" | jq -r '.imageScanFindings.findingSeverityCounts.HIGH')
+       - if [ "$high_severity" -gt 0 ]; then
+        echo "High-severity vulnerabilities found. Failing the build.";
+        exit 1;
+        fi
+        
       - kubectl get service
       - kubectl apply -f kubernetes/serviceaccountEPS.yaml
       - kubectl apply -f kubernetes/secretEPS.yaml
