@@ -5,7 +5,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 80          
-      targetPort: 4000  
+    - port: 80
+      targetPort: 4000
   selector:
-    app: technical-app 
+    app: technical-app
