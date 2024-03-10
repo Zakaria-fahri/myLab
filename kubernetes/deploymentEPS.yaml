@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: technical-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: technical-app
+    spec:
+      serviceAccountName: technicalservice
+      containers:
+        - name: testing
+          image: zakariafahri/mytechnicaltask:1
+          ports:
+            - containerPort: 4000
+          env:
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: technical-secret
+                  key: API
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: technical-secret
+                  key: PORT
+            - name: GREETING
+              valueFrom:
+                secretKeyRef:
+                  name: technical-secret
+                  key: GREETING
